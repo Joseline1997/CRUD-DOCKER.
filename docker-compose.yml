@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: laravel_app
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_CONNECTION=pgsql
+      - DB_HOST=127.0.0.1
+      - DB_PORT=5432
+      - DB_DATABASE=ProyectoWebB
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres123
+    command: php artisan serve --host=0.0.0.0 --port=8000
+    depends_on:
+      - db
+
+  db:
+    image: postgres:latest
+    container_name: laravel_db
+    restart: always
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+      POSTGRES_DB: ProyectoWebB
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+
+volumes:
+  dbdata:
